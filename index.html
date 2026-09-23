@@ -417,15 +417,17 @@ body.cm-open{overflow:hidden}
       ddBtn.setAttribute('aria-expanded', isOpen);
       if(isOpen){
         ddMenu.classList.remove('dd-up');
+        // على الموبايل شريط العنوان بياكل من المساحة الظاهرة فعلياً حتى لو innerHeight بيفضل زي ما هو،
+        // فبنستخدم visualViewport لو موجود عشان يدّينا الطول الحقيقي الظاهر على الشاشة
+        var viewH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
         var r = ddMenu.getBoundingClientRect();
-        if(r.bottom > window.innerHeight){
+        if(r.bottom > viewH){
           // مفيش مساحة تحت الزرار -> افتح القايمة لفوق بدل تحت
           ddMenu.classList.add('dd-up');
           r = ddMenu.getBoundingClientRect();
         }
-        if(r.bottom > window.innerHeight || r.top < 0){
-          ddMenu.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
+        // نسكرول لها دايماً بعد الفتح، بغض النظر عن الحساب، عشان نضمن إنها تبان مهما كانت شاشة الموبايل
+        ddMenu.scrollIntoView({ block: 'center', behavior: 'smooth' });
       }
     });
     document.addEventListener('click', function(e){
